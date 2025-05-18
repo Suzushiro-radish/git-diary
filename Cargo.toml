@@ -4,8 +4,8 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.95"
-async-openai = "0.27.2"
-chrono = "0.4.39"
-git2 = "0.20.0"
-tokio = { version = "1.43.0", features = ["full"] }
+anyhow = "^1.0.95"
+async-openai = "^0.27.2"
+chrono = "^0.4.39"
+git2 = "^0.20.0"
+tokio = { version = "^1.43.0", features = ["full"] }
