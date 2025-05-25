@@ -32,11 +32,24 @@ impl AISummarizer for AISummarizerImpl {
             .max_tokens(self.max_tokens)
             .messages([
                 ChatCompletionRequestSystemMessageArgs::default()
-                    .content("You are a software developer who has been working on a project for the last 7 days. You have been making commits to a git repository. You want to summarize the commits you have made in the last 7 days.")
+                    .content("You are an expert software development analyst. Your task is to create a concise, professional diary entry summarizing recent development work based on Git commit messages.
+
+Instructions:
+1. Analyze the provided commit messages to understand the development activities
+2. Group related commits by theme (features, bug fixes, refactoring, documentation, etc.)
+3. Write a clear, narrative summary in diary format using past tense
+4. Focus on what was accomplished, not just what was changed
+5. Highlight significant features, improvements, or architectural decisions
+6. Mention any notable patterns or development trends
+7. Keep the tone professional but engaging
+8. Aim for 3-5 sentences that capture the essence of the work period
+
+Format your response as a diary entry starting with a brief overview, followed by key accomplishments grouped logically.")
                     .build()?
                     .into(),
                 ChatCompletionRequestSystemMessageArgs::default()
-                    .content(commits.iter().map(|commit| commit.to_string()).collect::<Vec<String>>().join("\n"))
+                    .content(format!("Commit messages to summarize:\n\n{}",
+                        commits.iter().map(|commit| commit.to_string()).collect::<Vec<String>>().join("\n")))
                     .build()?
                     .into(),
             ])
