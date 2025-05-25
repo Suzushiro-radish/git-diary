@@ -1,6 +1,7 @@
 use anyhow::Result;
 use async_openai::Client;
 use chrono::{DateTime, Duration, Local};
+use clap::Parser;
 use std::sync::Arc;
 
 // Declare modules
@@ -14,6 +15,15 @@ use ai::AISummarizerImpl;
 use domain::{DateTimeProvider, DiaryGenerator};
 use git::GitRepositoryImpl;
 use storage::DiaryStorageImpl;
+
+/// Generate a diary from Git commits using AI summarization
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Number of days to look back for commits
+    #[arg(short, long, default_value_t = 1)]
+    days: i64,
+}
 
 // Simple DateTime provider implementation
 struct LocalDateTimeProvider;
@@ -36,6 +46,9 @@ impl DateTimeProvider for LocalDateTimeProvider {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Parse command-line arguments
+    let args = Args::parse();
+
     // Get current directory as repo path
     let repo_path = std::env::current_dir()?.to_string_lossy().to_string();
 
@@ -55,7 +68,7 @@ async fn main() -> Result<()> {
         ai_summarizer,
         storage,
         datetime_provider,
-        7, // Last 7 days
+        args.days, // Use the parsed number of days
     );
 
     // Generate diary
